@@ -38,18 +38,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade cython==0.29.33 buildozer
 
-      - name: Force Install Legacy Android SDK Tools for Buildozer
+      - name: Fix Legacy SDK Paths & Inject Licenses
         run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/tools
+          # Crear la estructura moderna del SDK
+          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip -q cmdline-tools.zip -d temp_tools
-          cp -r temp_tools/cmdline-tools/* ~/.buildozer/android/platform/android-sdk/tools/
           mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
           cp -r temp_tools/cmdline-tools/* ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
+          
+          # CREAR LA RUTA HEREDADA QUE BUILDOZER EXIGE OBLIGATORIAMENTE
+          mkdir -p ~/.buildozer/android/platform/android-sdk/tools
+          ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin ~/.buildozer/android/platform/android-sdk/tools/bin
+          ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/lib ~/.buildozer/android/platform/android-sdk/tools/lib
+          
           rm -rf cmdline-tools.zip temp_tools
 
-      - name: Inject Android SDK Licenses
-        run: |
+          # Inyectar las licencias de Android SDK
           mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
           echo "24330f8a85c6e5e3e20d7407d57279326d9c727a" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
           echo "84831b9409646a918e30573bab4c9c91346d8abd" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license

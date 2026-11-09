@@ -11,10 +11,7 @@ fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 android.api = 33
 android.minapi = 21
-android.sdk = 33
-android.ndk = 25b
-android.release_artifact = aab
-android.build_tools_version = 33.0.2
+android.archs = arm64-v8a
 
 [buildozer]
 log_level = 2

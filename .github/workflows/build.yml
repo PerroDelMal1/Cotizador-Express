@@ -38,27 +38,34 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade cython==0.29.33 buildozer
 
-      - name: Fix Legacy SDK Paths & Inject Licenses
+      - name: Force Setup Android SDK, Paths and Licenses
         run: |
-          # Crear la estructura moderna del SDK
+          # 1. Instalar herramientas de línea de comandos modernas
           mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip -q cmdline-tools.zip -d temp_tools
           mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
           cp -r temp_tools/cmdline-tools/* ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
           
-          # CREAR LA RUTA HEREDADA QUE BUILDOZER EXIGE OBLIGATORIAMENTE
+          # 2. Crear las rutas heredadas que Buildozer exige
           mkdir -p ~/.buildozer/android/platform/android-sdk/tools
           ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin ~/.buildozer/android/platform/android-sdk/tools/bin
           ln -s ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/lib ~/.buildozer/android/platform/android-sdk/tools/lib
           
           rm -rf cmdline-tools.zip temp_tools
 
-          # Inyectar las licencias de Android SDK
+          # 3. Inyectar licencias oficiales en todas las rutas posibles
           mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
           echo "24330f8a85c6e5e3e20d7407d57279326d9c727a" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
           echo "84831b9409646a918e30573bab4c9c91346d8abd" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
           echo "d556f162b70fa75cbd7971519d5cf27c02b6abf8" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+
+          # 4. INSTALAR MANUALMENTE EL SDK Y BUILD-TOOLS 33 PARA EVITAR QUE BUSQUE LA VERSIÓN 37
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+          
+          yes | sdkmanager --licenses || true
+          sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
       - name: Build with Buildozer
         run: |

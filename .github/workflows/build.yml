@@ -38,6 +38,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade cython==0.29.33 buildozer
 
+      - name: Inject Android SDK Licenses for Build-Tools 37
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo "24330f8a85c6e5e3e20d7407d57279326d9c727a" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "84831b9409646a918e30573bab4c9c91346d8abd" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "d556f162b70fa75cbd7971519d5cf27c02b6abf8" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+
       - name: Build with Buildozer
         run: |
           buildozer -v android release

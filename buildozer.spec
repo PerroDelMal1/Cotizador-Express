@@ -5,7 +5,7 @@ package.domain = org.tuempresa
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0.0
-requirements = python3,kivy,kivymd,reportlab,pyjnius,certifi
+requirements = python3,kivy,kivymd,pyjnius,certifi
 orientation = portrait
 fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
@@ -15,7 +15,6 @@ android.sdk = 33
 android.ndk = 25b
 android.release_artifact = aab
 android.build_tools_version = 33.0.2
-p4a.branch = master
 
 [buildozer]
 log_level = 2
